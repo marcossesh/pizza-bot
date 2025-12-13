@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+sqlmodel
+asyncpg
+langgraph
+langchain-groq
+python-dotenv
+requests
