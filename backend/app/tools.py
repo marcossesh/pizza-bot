@@ -32,3 +32,31 @@ async def get_pizza_price(pizza_name: str) -> str:
         
     finally:
         await session.close()
+
+@tool
+async def add_to_order(pizza_name: str, quantity: int = 1) -> str:
+    """Use esta ferramenta quando o usuário confirmar que quer pedir uma pizza."""
+    logger.info(f"Adding to order: {quantity}x {pizza_name}")
+    
+    session_generator = get_session()
+    session = await session_generator.__anext__()
+    
+    try:
+        statement = select(Pizza).where(Pizza.name.ilike(f"%{pizza_name}%"))
+        result = await session.exec(statement)
+        pizza = result.first()
+        
+        if pizza:
+            total = pizza.price * quantity
+            logger.info(f"Added {quantity}x {pizza.name} to order. Total: {total}")
+            return f"Adicionado {quantity}x {pizza.name} ao pedido. Valor unitário: R$ {pizza.price:.2f}. Subtotal: R$ {total:.2f}"
+        else:
+            logger.warning(f"Pizza not found for order: {pizza_name}")
+            return f"Desculpe, não encontrei a pizza de {pizza_name} para adicionar ao pedido."
+            
+    except Exception as e:
+        logger.error(f"Error adding to order: {str(e)}", exc_info=True)
+        return f"Erro ao processar pedido: {str(e)}"
+        
+    finally:
+        await session.close()

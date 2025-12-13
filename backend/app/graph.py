@@ -7,13 +7,15 @@ from langgraph.graph import StateGraph, END
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode
 
-from app.tools import get_pizza_price
+from app.tools import get_pizza_price, add_to_order
 import logging
 
 logger = logging.getLogger("pizzabot")
 
 class AgentState(TypedDict):
     messages: Annotated[list[BaseMessage], add_messages]
+    order_items: list[str]
+    total_cost: float
 
 
 # Ensure GROQ_API_KEY is set in environment variables
@@ -28,7 +30,7 @@ llm = ChatGroq(
     max_retries=2,
 )
 
-tools = [get_pizza_price]
+tools = [get_pizza_price, add_to_order]
 llm_with_tools = llm.bind_tools(tools)
 
 def chatbot(state: AgentState):
