@@ -23,7 +23,7 @@ if not os.environ.get("GROQ_API_KEY"):
     logger.warning("GROQ_API_KEY not found in environment variables.")
 
 llm = ChatGroq(
-    model="llama3-70b-8192",
+    model="llama-3.3-70b-versatile",
     temperature=0,
     max_tokens=None,
     timeout=None,

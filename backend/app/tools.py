@@ -8,6 +8,10 @@ logger = logging.getLogger("pizzabot")
 
 @tool
 async def get_pizza_price(pizza_name: str) -> str:
+    """
+    Consulta o preço e os ingredientes de uma pizza no banco de dados.
+    Use esta ferramenta quando o usuário perguntar o preço de uma pizza ou o que vem nela.
+    """
 
     logger.info(f"Searching for pizza: {pizza_name}")
     
