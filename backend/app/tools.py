@@ -64,3 +64,35 @@ async def add_to_order(pizza_name: str, quantity: int = 1) -> str:
         
     finally:
         await session.close()
+
+@tool
+async def get_menu() -> str:
+    """
+    Retorna o cardápio completo da pizzaria.
+    Use esta ferramenta quando o usuário pedir para ver o cardápio ou as opções disponíveis.
+    """
+    logger.info("Fetching full menu")
+    
+    session_generator = get_session()
+    session = await session_generator.__anext__()
+    
+    try:
+        statement = select(Pizza)
+        result = await session.exec(statement)
+        pizzas = result.all()
+        
+        if pizzas:
+            menu_text = "Cardápio:\n"
+            for pizza in pizzas:
+                menu_text += f"- {pizza.name}: R$ {pizza.price:.2f} ({pizza.ingredients})\n"
+            logger.info(f"Menu text generated: {menu_text}")
+            return menu_text
+        else:
+            return "O cardápio está vazio no momento."
+            
+    except Exception as e:
+        logger.error(f"Error fetching menu: {str(e)}", exc_info=True)
+        return f"Erro ao consultar o cardápio: {str(e)}"
+        
+    finally:
+        await session.close()

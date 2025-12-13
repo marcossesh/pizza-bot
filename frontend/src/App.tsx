@@ -1,22 +1,11 @@
-import { useState } from 'react'
-import './index.css'
+import Chat from './components/Chat';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div className="container">
-      <h1>Pizza Bot Frontend</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
+    <div className="App">
+      <Chat />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
