@@ -6,6 +6,7 @@ from langchain_core.messages import HumanMessage, AIMessage, BaseMessage, System
 from langgraph.graph import StateGraph, END
 from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode
+from langgraph.checkpoint.memory import MemorySaver
 
 from app.tools import get_pizza_price, add_to_order, get_menu
 import logging
@@ -36,11 +37,15 @@ llm_with_tools = llm.bind_tools(tools)
 SYSTEM_PROMPT = """Você é o Pizza Bot, um assistente virtual de uma pizzaria.
 Seu objetivo é ajudar os clientes a ver o cardápio, consultar preços e fazer pedidos.
 
-REGRAS CRÍTICAS:
-1. Quando a ferramenta `get_menu` for chamada, o retorno dela conterá a lista de pizzas.
-2. VOCÊ É OBRIGADO A COPIAR E COLAR ESSA LISTA NA SUA RESPOSTA FINAL.
-3. NÃO RESUMA. NÃO DIGA APENAS "AQUI ESTÁ". MOSTRE A LISTA.
-4. Se a ferramenta retornar "Cardápio: ...", sua resposta DEVE conter "Cardápio: ...".
+REGRAS CRÍTICAS DE FERRAMENTAS:
+1. `get_menu`: Use APENAS quando o usuário pedir explicitamente para ver o cardápio ou opções.
+2. `add_to_order`: Use quando o usuário quiser fazer um pedido (ex: "quero uma", "adicione", "vou levar").
+   - Se o usuário não disser o nome da pizza (ex: "quero uma"), USE O CONTEXTO da conversa para identificar qual pizza ele está falando (a última mencionada).
+   - Se não houver pizza no contexto, pergunte qual pizza ele deseja.
+
+REGRAS DE EXIBIÇÃO:
+1. Quando a ferramenta `get_menu` for chamada, VOCÊ É OBRIGADO A COPIAR E COLAR A LISTA RETORNADA NA SUA RESPOSTA.
+2. NÃO RESUMA O CARDÁPIO. Mostre todos os itens retornados pela ferramenta.
 
 Responda sempre em português do Brasil de forma educada e prestativa."""
 
@@ -70,4 +75,5 @@ graph_builder.add_conditional_edges(
 
 graph_builder.add_edge("tools", "chatbot")
 
-graph = graph_builder.compile()
+memory = MemorySaver()
+graph = graph_builder.compile(checkpointer=memory)
