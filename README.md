@@ -33,7 +33,7 @@ Certifique-se de que os seguintes itens estejam instalados em seu sistema:
 
 ## Início Rápido
 
-Fornecemos um script de configuração automatizado para você começar rapidamente.
+### Linux / macOS
 
 1.  **Clone o repositório**:
     ```bash
@@ -43,6 +43,7 @@ Fornecemos um script de configuração automatizado para você começar rapidame
 
 2.  **Execute o script de configuração**:
     ```bash
+    chmod +x setup.sh
     ./setup.sh
     ```
     Este script irá:
@@ -63,6 +64,27 @@ Fornecemos um script de configuração automatizado para você começar rapidame
     ```
 
 5.  **Acesse a Aplicação**:
+    Abra [http://localhost:3000](http://localhost:3000) no seu navegador.
+
+### Windows
+
+1.  **Clone o repositório**:
+    ```powershell
+    git clone https://github.com/marcossesh/pizza-bot
+    cd pizza-bot
+    ```
+
+2.  **Execute o script de configuração**:
+    Abra o PowerShell como Administrador (opcional, mas recomendado se houver problemas de permissão) e execute:
+    ```powershell
+    .\setup.ps1
+    ```
+    *Nota: Se a execução de scripts estiver desabilitada, execute `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` antes.*
+
+3.  **Configure a Chave de API**:
+    Abra o arquivo `.env` criado e adicione sua `GROQ_API_KEY`.
+
+4.  **Acesse a Aplicação**:
     Abra [http://localhost:3000](http://localhost:3000) no seu navegador.
 
 ## Instalação Manual
